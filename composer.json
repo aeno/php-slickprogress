@@ -1,6 +1,6 @@
 {
   "name": "aeno/php-slickprogress",
-  "description": "Lightweight but beautiful CLI progress bars",
+  "description": "Lightweight but beautiful CLI progress bars and spinners",
   "minimum-stability": "stable",
   "license": "MPL-2.0",
   "authors": [
@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": "^7.1||^8.0"
+    "php": "^7.1||^7.2||^7.3||^7.4||^8.0"
   },
   "autoload": {
     "psr-4": { "Aeno\\SlickProgress\\": "src/" }
