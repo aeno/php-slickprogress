@@ -12,132 +12,95 @@ declare(strict_types=1);
 
 use Aeno\SlickProgress\Colors;
 use Aeno\SlickProgress\Progress;
+use Aeno\SlickProgress\Theme\Simple;
 use Aeno\SlickProgress\Theme\Snake;
+use Aeno\SlickProgress\ThemeInterface;
 
 require __DIR__.'/../vendor/autoload.php';
 
-echo 'SNAKE --------------'.PHP_EOL;
-
-$theme = new Snake();
-
-$progress = new Progress($theme);
-$progress->start(50);
-
-for ($i=0;$i<50;$i++) {
-    $progress->advance();
-    usleep(50000);
+if ($argc === 1) {
+    echo "Please provide a demo style as argument.", PHP_EOL;
+    die();
 }
 
-$progress->finish();
-echo PHP_EOL;
+$demo = $argv[1];
 
-echo 'SNAKE WITH STATUS ---'.PHP_EOL;
+$holdOnTexts = [
+    'Hold on...',
+    'Just a second...',
+    'Still working...',
+    'The cat ran away! Need to catch her quickly...',
+    "I'm still here!",
+    'Oh wow, just look at the time!',
+];
 
-$theme = new Snake();
+switch ($demo) {
+    case "simple":
+        $progress = new Progress();
+        $progress->start(50);
 
-$progress = new Progress($theme);
-$progress->start(50);
+        for ($i=0;$i<50;$i++) {
+            $progress->advance();
+            usleep(25000);
+        }
 
-for ($i=0;$i<50;$i++) {
-    if ($i % 10 === 0) {
-        $progress->setStatusMessage("Status Message - \$i === $i");
-    }
+        $progress->finish();
+        echo PHP_EOL;
+        break;
 
-    $progress->advance();
-    usleep(50000);
+    case "indefinite":
+        $progress = new Progress();
+        $progress->start(-1);
+
+        for ($i=0;$i<200;$i++) {
+            if ($i % 50 === 0) {
+                $progress->setStatusMessage($holdOnTexts[array_rand($holdOnTexts)]);
+            }
+
+            $progress->advance();
+            usleep(25000);
+        }
+
+        $progress->finish();
+        echo PHP_EOL;
+        break;
+
+    case "detailed":
+        $theme = new Simple();
+        $theme->showStep(true);
+        $theme->showPercent(true);
+
+        $progress = new Progress($theme);
+        $progress->start(200);
+
+        for ($i=0;$i<200;$i++) {
+            $progress->advance();
+            usleep(25000);
+        }
+
+        $progress->finish();
+
+        echo PHP_EOL;
+        break;
+
+    case "spinner":
+        $theme = new Snake();
+        $theme->setColorType(Colors::COLOR_TYPE_ANSI256);
+
+        $progress = new Progress($theme);
+        $progress->start(-1);
+
+        for ($i=0;$i<100;$i++) {
+            if ($i % 20 === 0) {
+                $progress->setStatusMessage($holdOnTexts[array_rand($holdOnTexts)]);
+            }
+
+            $progress->advance();
+            usleep(50000);
+        }
+
+        $progress->finish(ThemeInterface::FINISH_TYPE_MESSAGE, '✅ Done!');
+        echo PHP_EOL;
+        break;
 }
 
-$progress->finish();
-echo PHP_EOL;
-
-echo 'SNAKE WITH LABELS ---'.PHP_EOL;
-
-$theme = new Snake();
-$theme->showStep(true);
-$theme->showPercent(true);
-
-$progress = new Progress($theme);
-$progress->start(50);
-
-for ($i=0;$i<50;$i++) {
-    $progress->advance();
-    usleep(50000);
-}
-
-$progress->finish();
-
-echo PHP_EOL;
-
-echo 'SNAKE INDEFINITE ---'.PHP_EOL;
-
-$theme = new Snake();
-
-$progress = new Progress($theme);
-$progress->start(-1);
-
-for ($i=0;$i<100;$i++) {
-    $progress->advance();
-    usleep(50000);
-}
-
-$progress->finish();
-
-echo PHP_EOL;
-
-echo 'SNAKE INDEFINITE COLORED ---'.PHP_EOL;
-
-$theme = new Snake();
-$theme->setColorType(Colors::COLOR_TYPE_ANSI256);
-
-$progress = new Progress($theme);
-$progress->start(-1);
-
-for ($i=0;$i<100;$i++) {
-    $progress->advance();
-    usleep(50000);
-}
-
-$progress->finish();
-echo PHP_EOL;
-
-echo 'SNAKE INDEFINITE COLORED WITH STATUS ---'.PHP_EOL;
-
-$theme = new Snake();
-$theme->setColorType(Colors::COLOR_TYPE_ANSI256);
-
-$progress = new Progress($theme);
-$progress->start(-1);
-
-for ($i=0;$i<100;$i++) {
-    if ($i % 10 === 0) {
-        $progress->setStatusMessage("Status Message - \$i === $i");
-    }
-
-    $progress->advance();
-    usleep(50000);
-}
-
-$progress->finish();
-echo PHP_EOL;
-
-echo 'SNAKE INDEFINITE WITH LABELS ---'.PHP_EOL;
-
-$theme = new Snake();
-$theme->showStep(true);
-$theme->showPercent(true);
-
-$progress = new Progress($theme);
-$progress->start(-1);
-
-for ($i=0;$i<100;$i++) {
-    $progress->advance();
-    usleep(50000);
-}
-
-$progress->finish();
-
-echo PHP_EOL;
-
-echo 'DONE!', PHP_EOL;
-
-echo 'peak mem: '.memory_get_peak_usage(true), PHP_EOL;
