@@ -53,10 +53,6 @@ switch ($demo) {
         $progress->start(-1);
 
         for ($i=0;$i<200;$i++) {
-            if ($i % 50 === 0) {
-                $progress->setStatusMessage($holdOnTexts[array_rand($holdOnTexts)]);
-            }
-
             $progress->advance();
             usleep(25000);
         }
