@@ -119,7 +119,7 @@ abstract class AbstractTheme implements ThemeInterface
                 return $this->resetCursor() . $this->render() . PHP_EOL . $showCursor;
 
             case self::FINISH_TYPE_MESSAGE:
-                return $this->resetCursor() . $message . PHP_EOL . $showCursor;
+                return $this->clear() . $message . PHP_EOL . $showCursor;
 
             case self::FINISH_TYPE_INLINE:
             default:
