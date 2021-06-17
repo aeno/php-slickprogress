@@ -35,6 +35,9 @@ abstract class AbstractTheme implements ThemeInterface
     /** @var int Current terminal width */
     protected $terminalWidth;
 
+    /** @var float */
+    protected $lastFrameTimestamp = 0.0;
+
     public function __construct()
     {
         // read current terminal width (columns)
@@ -95,7 +98,16 @@ abstract class AbstractTheme implements ThemeInterface
 
     public function advance(int $step = 1): string
     {
-        $this->current += $step;
+        if ($this->indefinite) {
+            $now = microtime(true);
+            if ($now >= $this->lastFrameTimestamp + 0.075) {
+                $this->lastFrameTimestamp = $now;
+                $this->current += $step;
+            }
+        } else {
+            $this->current += $step;
+        }
+
         return $this->resetCursor() . $this->render();
     }
 
