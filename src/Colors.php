@@ -71,7 +71,7 @@ class Colors
             $ansi += 60;
         }
 
-        return $ansi;
+        return (int) $ansi;
     }
 
     /**
@@ -104,7 +104,7 @@ class Colors
                 return 231;
             }
 
-            return round((($r - 8) / 247) * 24) + 232;
+            return (int) round((($r - 8) / 247) * 24) + 232;
         }
 
         return (int) (16

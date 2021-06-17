@@ -83,19 +83,7 @@ class Simple extends AbstractTheme
             }
         }
 
-        if ($this->status !== null) {
-            $result .= ' '.$this->status;
-
-            if (extension_loaded('mbstring')) {
-                $spaces = $this->terminalWidth - mb_strlen($result);
-            } else {
-                $spaces = $this->terminalWidth - strlen($result);
-            }
-
-            $result = $result . str_repeat(' ', max(0, $spaces)) . "\r";
-        }
-
-        return $result;
+        return $this->renderStatus($result);
     }
 
     public function showPercent(bool $showPercent): self

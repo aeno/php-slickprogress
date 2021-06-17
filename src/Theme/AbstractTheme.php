@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of aeno/php-slickprogress.
  * (c) Steffen Rieke <dev@aenogym.de>
@@ -37,7 +38,10 @@ abstract class AbstractTheme implements ThemeInterface
     public function __construct()
     {
         // read current terminal width (columns)
-        $this->terminalWidth = (int) (exec('tput cols') ?? 80);
+        $cols = exec('tput cols');
+        $this->terminalWidth = !$cols
+            ? 80
+            : (int) $cols;
     }
 
     /**
@@ -129,6 +133,23 @@ abstract class AbstractTheme implements ThemeInterface
         return "\r\033[2K";
     }
 
+    protected function renderStatus(string $output): string
+    {
+        if ($this->status !== null) {
+            $output .= ' '.$this->status;
+
+            if (extension_loaded('mbstring')) {
+                $spaces = $this->terminalWidth - mb_strlen($output);
+            } else {
+                $spaces = $this->terminalWidth - strlen($output);
+            }
+
+            $output = $output . str_repeat(' ', max(0, $spaces)) . "\r";
+        }
+
+        return $output;
+    }
+
     protected function resetCursor(): string
     {
         return "\r";
@@ -137,6 +158,7 @@ abstract class AbstractTheme implements ThemeInterface
     protected function setMax(int $max): void
     {
         $this->max = $max;
+        /** @psalm-suppress InvalidPropertyAssignmentValue */
         $this->maxWidth = strlen((string) $this->max);
     }
 
