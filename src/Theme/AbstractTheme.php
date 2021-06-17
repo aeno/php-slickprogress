@@ -31,6 +31,15 @@ abstract class AbstractTheme implements ThemeInterface
     /** @var string|null Current status message */
     protected $status = null;
 
+    /** @var int Current terminal width */
+    protected $terminalWidth;
+
+    public function __construct()
+    {
+        // read current terminal width (columns)
+        $this->terminalWidth = (int) (exec('tput cols') ?? 80);
+    }
+
     /**
      * Render the current progress output
      *
@@ -47,12 +56,37 @@ abstract class AbstractTheme implements ThemeInterface
         }
 
         $this->current = 0;
-        return $this->render();
+        $hideCursor = $this->hideCursor();
+
+        return $hideCursor . $this->render();
     }
 
     public function setStatusMessage(?string $status): void
     {
-        $this->status = $status;
+        if ($status === null) {
+            $this->status = null;
+            return;
+        }
+
+        // use mbstring functions, if possible
+        if (extension_loaded('mbstring')) {
+            $substr = 'mb_substr';
+            $strpos = 'mb_strpos';
+        } else {
+            $substr = 'substr';
+            $strpos = 'strpos';
+        }
+
+        // cap message at terminal width - 10
+        $status        = call_user_func($substr, $status, 0, $this->terminalWidth - 10);
+
+        // only allow one line
+        $breakPosition = call_user_func($strpos, $status, "\n");
+        if ($breakPosition !== false) {
+            $status    = call_user_func($substr, $status, 0, $breakPosition);
+        }
+
+        $this->status = trim($status);
     }
 
     public function advance(int $step = 1): string
@@ -61,10 +95,12 @@ abstract class AbstractTheme implements ThemeInterface
         return $this->resetCursor() . $this->render();
     }
 
-    public function finish(string $type = self::FINISH_TYPE_NEWLINE): string
+    public function finish(string $type = self::FINISH_TYPE_NEWLINE, ?string $message = null): string
     {
+        $showCursor = $this->showCursor();
+
         if ($type === self::FINISH_TYPE_CLEAR) {
-            return $this->clear();
+            return $this->clear() . $showCursor;
         }
 
         if ($this->indefinite) {
@@ -73,15 +109,17 @@ abstract class AbstractTheme implements ThemeInterface
         }
 
         $this->current = $this->max;
-        $result = $this->resetCursor() . $this->render();
 
         switch ($type) {
             case self::FINISH_TYPE_NEWLINE:
-                return $result . PHP_EOL;
+                return $this->resetCursor() . $this->render() . PHP_EOL . $showCursor;
+
+            case self::FINISH_TYPE_MESSAGE:
+                return $this->resetCursor() . $message . PHP_EOL . $showCursor;
 
             case self::FINISH_TYPE_INLINE:
             default:
-                return $result;
+                return $this->resetCursor() . $this->render() . $showCursor;
         }
     }
 
@@ -100,5 +138,15 @@ abstract class AbstractTheme implements ThemeInterface
     {
         $this->max = $max;
         $this->maxWidth = strlen((string) $this->max);
+    }
+
+    protected function showCursor(): string
+    {
+        return "\033[?25h";
+    }
+
+    protected function hideCursor(): string
+    {
+        return "\033[?25l";
     }
 }
