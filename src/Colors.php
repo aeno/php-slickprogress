@@ -12,6 +12,11 @@ declare(strict_types=1);
 
 namespace Aeno\SlickProgress;
 
+/**
+ * Static helper methods for color conversions.
+ *
+ * @package Aeno\SlickProgress
+ */
 class Colors
 {
     const COLOR_TYPE_NONE = 0;
@@ -33,7 +38,7 @@ class Colors
      * @return int Ansi 16 color code
      *
      * This function is ported from the color-convert JS library at
-     * https://github.com/Qix-/color-convert, (c) Heather Arthur, Licensed
+     * {@link https://github.com/Qix-/color-convert}, (c) Heather Arthur, Licensed
      * under the MIT License.
      * @author Heather Arthur <fayearthur@gmail.com>
      * @author Josh Junon <junon.me>
@@ -78,7 +83,7 @@ class Colors
      * @return int Ansi 256 color code
      *
      * This function is ported from the color-convert JS library at
-     * https://github.com/Qix-/color-convert, (c) Heather Arthur, Licensed
+     * {@link https://github.com/Qix-/color-convert}, (c) Heather Arthur, Licensed
      * under the MIT License.
      * @author Heather Arthur <fayearthur@gmail.com>
      * @author Josh Junon <junon.me>
@@ -117,7 +122,7 @@ class Colors
      * @return int[] HSV color components
      *
      * This function is ported from the color-convert JS library at
-     * https://github.com/Qix-/color-convert, (c) Heather Arthur, Licensed
+     * {@link https://github.com/Qix-/color-convert}, (c) Heather Arthur, Licensed
      * under the MIT License.
      * @author Heather Arthur <fayearthur@gmail.com>
      * @author Josh Junon <junon.me>
@@ -168,7 +173,7 @@ class Colors
      * @return int[] RGB color components
      *
      * This function is ported from the color-convert JS library at
-     * https://github.com/Qix-/color-convert, (c) Heather Arthur, Licensed
+     * {@link https://github.com/Qix-/color-convert}, (c) Heather Arthur, Licensed
      * under the MIT License.
      * @author Heather Arthur <fayearthur@gmail.com>
      * @author Josh Junon <junon.me>

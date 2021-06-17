@@ -16,16 +16,26 @@ use Aeno\SlickProgress\ThemeInterface;
 
 abstract class AbstractTheme implements ThemeInterface
 {
+    /** @var int Maximum progress value */
     protected $max = 100;
-    protected $maxWidth = null;     // string width of maximum value
+
+    /** @var null String width of maximum progress value number ("100" = 3) */
+    protected $maxWidth = null;
+
+    /** @var int Current progress value */
     protected $current = 0;
 
-    /** @var bool */
+    /** @var bool Display progress as indefinite (if maximum is unknown) */
     protected $indefinite = false;
 
-    /** @var string|null */
+    /** @var string|null Current status message */
     protected $status = null;
 
+    /**
+     * Render the current progress output
+     *
+     * @return string
+     */
     abstract protected function render(): string;
 
     public function start(int $max = -1): string
